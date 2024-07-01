@@ -16,7 +16,7 @@ module.exports = {
           const user = await User.findOne({ _id: req.params.userId })
     
           if (!user) {
-            return res.status(404).json({ message: 'No existing user' })
+            return res.status(404).json({ message: 'No such user' })
           }
     
           res.json(user);
@@ -57,7 +57,7 @@ module.exports = {
           const user = await User.findOneAndRemove({ _id: req.params.userId });
     
           if (!user) {
-            return res.status(404).json({ message: 'No existing user' });
+            return res.status(404).json({ message: 'No such user' });
           }
     
         //   const thought = await Thought.findOneAndUpdate(
