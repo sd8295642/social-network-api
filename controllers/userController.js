@@ -3,7 +3,7 @@ const { User, Thought } = require('../models');
 module.exports = {
     async getUsers(req, res) {
       try {
-        const users = await User.find();
+        const users = await User.find().populate('friends');
   
         res.json(users);
       } catch (err) {
@@ -54,7 +54,7 @@ module.exports = {
       },
       async deleteUser(req, res) {
         try {
-          const user = await User.findOneAndRemove({ _id: req.params.userId });
+          const user = await User.findOneAndDelete({ _id: req.params.userId });
     
           if (!user) {
             return res.status(404).json({ message: 'No such user' });
@@ -104,10 +104,9 @@ module.exports = {
         try {
           const user = await User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $pull: { friends: { friendId: req.params.friendId } } },
+            { $pull: { friends: req.params.friendId } },
             { runValidators: true, new: true }
-          )
-          //.populate("friends")
+          ).populate("friends")
     
           if (!user) {
             return res

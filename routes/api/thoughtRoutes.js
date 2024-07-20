@@ -11,6 +11,8 @@ const {
   } = require('../../controllers/thoughtController');
   
   router.route('/').get(getThoughts).post(createThought);
+
+  router.route('/:thoughtId').put(updateThought);
   
   router.route('/:thoughtId').get(getSingleThought).delete(deleteThought);
 

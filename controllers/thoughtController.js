@@ -3,7 +3,7 @@ const { User, Thought } = require('../models');
 module.exports = {
     async getThoughts(req, res) {
       try {
-        const thoughts = await Thought.find();
+        const thoughts = await Thought.find().populate('reactions');
   
         res.json(thoughts);
       } catch (err) {
@@ -54,7 +54,7 @@ module.exports = {
       },
       async deleteThought(req, res) {
         try {
-          const thought = await Thought.findOneAndRemove({ _id: req.params.thoughtId });
+          const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
     
           if (!thought) {
             return res.status(404).json({ message: 'No such thought' });
@@ -73,7 +73,7 @@ module.exports = {
         try {
           const thought = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $addToSet: { reactions: req.params.reactionId } },
+            { $addToSet: { reactions: req.body } },
             { runValidators: true, new: true }
           );
     
@@ -94,8 +94,7 @@ module.exports = {
             { _id: req.params.thoughtId },
             { $pull: { reactions: { reactionId: req.params.reactionId } } },
             { runValidators: true, new: true }
-          )
-          //.populate("reactions")
+          ).populate("reactions")
     
           if (!thought) {
             return res
